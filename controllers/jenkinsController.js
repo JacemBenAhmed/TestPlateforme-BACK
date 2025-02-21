@@ -18,3 +18,26 @@ exports.runJenkinsJob = async (req, res) => {
         res.status(500).json({ error: "Erreur lors du déclenchement du job", details: error.response?.data || error.message });
     }
 };
+
+
+exports.getJenkinsJobs = async (req, res) => {
+    try {
+        const url = `${JENKINS_URL}/api/json`;
+        const response = await axios.get(url, {
+            auth: {
+                username: JENKINS_USER,
+                password: JENKINS_API_TOKEN
+            }
+        });
+
+        const jobs = response.data.jobs.map(job => ({
+            name: job.name,
+            url: job.url,
+            color: job.color 
+        }));
+
+        res.json({ jobs });
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de la récupération des jobs", details: error.response?.data || error.message });
+    }
+};
