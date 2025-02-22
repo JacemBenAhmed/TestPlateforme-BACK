@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { SONARQUBE_URL } = require('../config/dotenvConfig');
+const { SONARQUBE_URL ,SONARQUBE_TOKEN } = require('../config/dotenvConfig');
 
 
 
@@ -30,7 +30,32 @@ const loginSonarQube = async (req, res) => {
 };
 
 
+const createProject = async (req, res) => {
+    const { name, project } = req.body;
 
+    if (!name || !project) {
+        return res.status(400).json({ error: 'Name and project key are required' });
+    }
+
+    const params = new URLSearchParams({ name, project });
+
+    try {
+        //console.log(SONARQUBE_URL) ;
+        const response = await axios.post(
+            `${SONARQUBE_URL}/projects/create`,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Basic ${Buffer.from(SONARQUBE_TOKEN + ':').toString('base64')}`
+                }
+            }
+        );
+        res.status(201).json(response.data);
+    } catch (error) {
+        res.status(error.response?.status || 500).json({ error: error.response?.data || 'Internal Server Error' });
+    }
+};
 
 
 const getSonarProjets = async (req, res) => {
@@ -54,4 +79,4 @@ const getSonarProjets = async (req, res) => {
 
 
 
-module.exports = { loginSonarQube, getSonarProjets };
+module.exports = { loginSonarQube, getSonarProjets ,createProject};
