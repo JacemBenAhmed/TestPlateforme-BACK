@@ -157,10 +157,36 @@ async function getSonarAnalysis(req, res) {
       res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
     }
   }
+
+
+  async function isPassed(req,res) {
+    const {projectKey} = req.query ;
+    const authToken = req.headers.authorization;
+
+    if(!projectKey)
+    {
+        return res.status(400).json({ error: 'componentKeys is required' });
+    }
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/qualitygates/project_status`, {
+          params: {
+              projectKey: projectKey
+             
+          },
+         headers: { 'Authorization': authToken }
+        });
+    
+        res.json(response.data);
+      } catch (error) {
+        console.error('Erreur SonarQube:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+      }
+
+  }
   
 
   
 
 
 
-module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues};
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed};
