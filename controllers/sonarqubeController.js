@@ -78,5 +78,56 @@ const getSonarProjets = async (req, res) => {
 
 
 
+const getProjectAnalyses = async (req, res) => {
+    const { project } = req.query;
+    const authToken = req.headers.authorization;
 
-module.exports = { loginSonarQube, getSonarProjets ,createProject};
+    if (!project) {
+        return res.status(400).json({ error: 'Project key is required' });
+    }
+
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/project_analyses/search`, {
+            params: { project },
+            headers: { 'Authorization': authToken }
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error('Error fetching project analyses:', error.response?.data || error.message);
+        res.status(error.response?.status || 500).json({ error: error.response?.data || 'Internal Server Error' });
+    }
+};
+
+
+async function getSonarAnalysis(req, res) {
+    const { projectKey } = req.query;
+    const authToken = req.headers.authorization;
+
+
+    if (!projectKey) {
+        return res.status(400).json({ error: 'Project key is required' });
+    }
+
+
+
+    try {
+      const response = await axios.get(`${SONARQUBE_URL}/api/measures/component`, {
+        params: {
+          component: projectKey, 
+          metricKeys: 'coverage,ncloc,complexity,violations' 
+        },
+       headers: { 'Authorization': authToken }
+      });
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error('Erreur SonarQube:', error);
+      res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+    }
+  }
+  
+
+
+
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis};
