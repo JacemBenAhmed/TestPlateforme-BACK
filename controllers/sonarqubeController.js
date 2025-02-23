@@ -125,9 +125,42 @@ async function getSonarAnalysis(req, res) {
       console.error('Erreur SonarQube:', error);
       res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
     }
+  } ;
+
+
+
+  //TEST ISSUES : WORKS
+  async function getSonarIssues(req, res) {
+
+    const { componentKeys } = req.query;
+    const authToken = req.headers.authorization;
+
+
+    if (!componentKeys) {
+        return res.status(400).json({ error: 'componentKeys is required' });
+    }
+
+
+
+    try {
+      const response = await axios.get(`${SONARQUBE_URL}/api/issues/search`, {
+        params: {
+            componentKeys: componentKeys, 
+            severities: 'MAJOR' 
+        },
+       headers: { 'Authorization': authToken }
+      });
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error('Erreur SonarQube:', error);
+      res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+    }
   }
+  
+
   
 
 
 
-module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis};
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues};
