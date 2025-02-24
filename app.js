@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use('/api', authRoutes);
 app.use('/api/jenkins', jenkinsRoutes);
-app.use('/github',githubRoutes) ;
+app.use('/api',githubRoutes) ;
 
 
 

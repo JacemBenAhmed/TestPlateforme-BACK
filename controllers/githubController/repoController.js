@@ -1,21 +1,14 @@
 const axios = require('axios');
 
-
 exports.getAllRepositories = async (req, res) => {
-    const authToken = req.headers.authorization;
-
-    if (!authToken) {
-        return res.status(401).json({ error: "Token is required" });
-    }
+    const { username } = req.query;
+    const url = `https://api.github.com/users/${username}/repos`;
 
     try {
-        const response = await axios.get('https://api.github.com/user/repos', {
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-
-        return res.json(response.data);
+        const response = await axios.get(url);
+        res.json(response.data);
     } catch (error) {
-        console.error('Error fetching repositories', error);
-        return res.status(500).json({ error: "Error fetching repositories" });
+        res.status(500).json({ error: 'Erreur lors de la récupération des dépôts.' });
     }
 };
+ 

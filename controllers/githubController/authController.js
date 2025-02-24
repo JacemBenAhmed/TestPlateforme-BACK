@@ -23,8 +23,9 @@ exports.githubCallback = async (req, res) => {
         const user = await getGitHubUser(accessToken);
 
         const token = jwt.sign({ userId: user.id, username: user.login }, process.env.JWT_SECRET, { expiresIn: '1h' });
+       
 
-        res.json({ message: 'Utilisateur connecté avec succès', token });
+        res.redirect(`http://localhost:5173/?token=${token}&username=${user.login}`);
     } catch (error) {
         console.error('Erreur lors de l\'authentification avec GitHub', error);
         res.status(500).send('Erreur interne du serveur');
