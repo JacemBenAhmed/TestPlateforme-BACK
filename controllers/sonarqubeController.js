@@ -185,8 +185,44 @@ async function getSonarAnalysis(req, res) {
   }
   
 
+  // COUNT SEVERITY --
+
+ async function getSeverityCount(req,res) {
+    try {
+        const {componentKeys} = req.query ;
+        const authToken = req.headers.authorization;
+
+            if(!componentKeys)
+            {
+                return res.status(400).json({ error: 'componentKeys is required' });
+
+            }
+
+        const severities = ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR', 'INFO'];
+        let severityCounts = {};
+
+        for (let severity of severities) {
+            const response = await axios.get(`${SONARQUBE_URL}/api/issues/search`, {
+                params: {
+                    componentKeys: componentKeys,
+                    severities: severity,
+                    ps: 1, 
+                },
+                headers: { 'Authorization': authToken }
+            });
+
+            severityCounts[severity.toLowerCase()] = response.data.total;
+        }
+
+        res.json(severityCounts);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données SonarQube', error);
+        res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+};
+
   
 
 
 
-module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed};
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed,getSeverityCount};

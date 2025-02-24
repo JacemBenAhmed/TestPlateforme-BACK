@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginSonarQube ,getSonarProjets,createProject ,getProjectAnalyses,getSonarAnalysis,getSonarIssues,isPassed} = require('../controllers/sonarqubeController');
+const { loginSonarQube ,getSonarProjets,createProject ,getProjectAnalyses,getSonarAnalysis,getSonarIssues,isPassed,getSeverityCount} = require('../controllers/sonarqubeController');
 
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.get('/project-analyses', getProjectAnalyses);
 router.get('/analysis', getSonarAnalysis);
 router.get('/issues',getSonarIssues) ;
 router.get('/isPassed',isPassed) ;
+router.get('/severity-count', getSeverityCount);
 
 
 
