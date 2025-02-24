@@ -221,8 +221,25 @@ async function getSonarAnalysis(req, res) {
     }
 };
 
+
+
+
+const getOrgProjectsStats = async (req, res) => {
+    const authToken = req.headers.authorization;
+
+
+    
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/organizations/projects`, {
+            headers: { 'Authorization': authToken }       });
+
+        res.json(response.data.projects);
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de la récupération des projets" });
+    }
+};
   
 
 
 
-module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed,getSeverityCount};
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed,getSeverityCount,getOrgProjectsStats};
