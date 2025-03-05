@@ -6,7 +6,10 @@ const { SONARQUBE_URL ,SONARQUBE_TOKEN } = require('../config/dotenvConfig');
 
 
 const loginSonarQube = async (req, res) => {
-    const { login, password } = req.body;
+    //const { login, password } = req.body;
+
+    login = "admin" ;
+    password = "Jacem1022003." ;
 
     if (!login || !password) {
         return res.status(400).json({ error: "Login and password are required" });
@@ -59,7 +62,10 @@ const createProject = async (req, res) => {
 
 
 const getSonarProjets = async (req, res) => {
-    const authToken = req.headers.authorization;
+    //const authToken = req.headers.authorization;
+    const authToken = req.query.authToken;
+
+    console.log(authToken) ;
 
     if (!authToken) {
         return res.status(401).json({ error: "Token is required" });
@@ -67,7 +73,7 @@ const getSonarProjets = async (req, res) => {
 
     try {
         const response = await axios.get(`${SONARQUBE_URL}/api/projects/search`, {
-            headers: { 'Authorization': authToken }
+            headers: { 'Authorization': `Basic ${authToken}` }
         });
 
         return res.json(response.data);
