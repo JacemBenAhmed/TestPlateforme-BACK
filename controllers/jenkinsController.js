@@ -3,9 +3,12 @@ const { JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN, JENKINS_JOB_NAME ,JENKINS_
 
 exports.runJenkinsJob = async (req, res) => {
     try {
-        const url = `${JENKINS_URL}/job/${JENKINS_JOB_NAME}/build`;
-        console.log(url) ;
-        const response = await axios.post(url, {}, {
+        const { url, projetkey } = req.body;
+
+
+        const jenkinsUrl = `${JENKINS_URL}/job/${JENKINS_JOB_NAME}/buildWithParameters?url=${encodeURIComponent(url)}&projetkey=${encodeURIComponent(projetkey)}`;
+        console.log(jenkinsUrl) ;
+        const response = await axios.post(jenkinsUrl, {}, {
             auth: {
                 username: JENKINS_USER,
                 password: JENKINS_API_TOKEN2
