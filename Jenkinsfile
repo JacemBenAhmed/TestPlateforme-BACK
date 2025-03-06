@@ -5,10 +5,15 @@ pipeline {
         SONARQUBE_URL = 'http://192.168.1.109:9000'  
     }
 
+     parameters {
+        string(name: 'projetkey', defaultValue: '', description: 'Clé du projet SonarQube')
+        string(name: 'url', defaultValue: '', description: 'URL du dépôt Git')
+    }
+
     stages {
         stage('Cloner le Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/JacemBenAhmed/membership_card_odoo.git'
+                git branch: 'main', url: params.url
             }
         }
 
@@ -19,7 +24,7 @@ pipeline {
                         def scannerHome = tool 'SonarScanner'  
                         sh """
                             $scannerHome/bin/sonar-scanner \
-                                -Dsonar.projectKey=odoo_test\
+                                -Dsonar.projectKey=${params.projetkey}\
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=$SONARQUBE_URL \
                                 -Dsonar.login=\$SONARQUBE_TOKEN
