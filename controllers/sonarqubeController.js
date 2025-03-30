@@ -1,12 +1,15 @@
 const axios = require('axios');
-const { SONARQUBE_URL } = require('../config/dotenvConfig');
+const { SONARQUBE_URL ,SONARQUBE_TOKEN } = require('../config/dotenvConfig');
 
 
 
 
 
 const loginSonarQube = async (req, res) => {
-    const { login, password } = req.body;
+    //const { login, password } = req.body;
+
+    login = "admin" ;
+    password = "Jacem1022003." ;
 
     if (!login || !password) {
         return res.status(400).json({ error: "Login and password are required" });
@@ -30,11 +33,39 @@ const loginSonarQube = async (req, res) => {
 };
 
 
+const createProject = async (req, res) => {
+    const { name, project } = req.body;
 
+    if (!name || !project) {
+        return res.status(400).json({ error: 'Name and project key are required' });
+    }
+
+    const params = new URLSearchParams({ name, project });
+
+    try {
+        //console.log(SONARQUBE_URL) ;
+        const response = await axios.post(
+            `${SONARQUBE_URL}/projects/create`,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Basic ${Buffer.from(SONARQUBE_TOKEN + ':').toString('base64')}`
+                }
+            }
+        );
+        res.status(201).json(response.data);
+    } catch (error) {
+        res.status(error.response?.status || 500).json({ error: error.response?.data || 'Internal Server Error' });
+    }
+};
 
 
 const getSonarProjets = async (req, res) => {
-    const authToken = req.headers.authorization;
+    //const authToken = req.headers.authorization;
+    const authToken = req.query.authToken;
+
+    console.log(authToken) ;
 
     if (!authToken) {
         return res.status(401).json({ error: "Token is required" });
@@ -42,7 +73,7 @@ const getSonarProjets = async (req, res) => {
 
     try {
         const response = await axios.get(`${SONARQUBE_URL}/api/projects/search`, {
-            headers: { 'Authorization': authToken }
+            headers: { 'Authorization': `Basic ${authToken}` }
         });
 
         return res.json(response.data);
@@ -53,5 +84,168 @@ const getSonarProjets = async (req, res) => {
 
 
 
+const getProjectAnalyses = async (req, res) => {
+    const { project } = req.query;
+    const authToken = req.headers.authorization;
 
-module.exports = { loginSonarQube, getSonarProjets };
+    if (!project) {
+        return res.status(400).json({ error: 'Project key is required' });
+    }
+
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/project_analyses/search`, {
+            params: { project },
+            headers: { 'Authorization': authToken }
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error('Error fetching project analyses:', error.response?.data || error.message);
+        res.status(error.response?.status || 500).json({ error: error.response?.data || 'Internal Server Error' });
+    }
+};
+
+
+async function getSonarAnalysis(req, res) {
+    const { projectKey } = req.query;
+    const authToken = req.headers.authorization;
+
+
+    if (!projectKey) {
+        return res.status(400).json({ error: 'Project key is required' });
+    }
+
+
+
+    try {
+      const response = await axios.get(`${SONARQUBE_URL}/api/measures/component`, {
+        params: {
+          component: projectKey, 
+          metricKeys: 'coverage,ncloc,complexity,violations' 
+        },
+       headers: { 'Authorization': authToken }
+      });
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error('Erreur SonarQube:', error);
+      res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+    }
+  } ;
+
+
+
+  //TEST ISSUES : WORKS
+  async function getSonarIssues(req, res) {
+
+    const { componentKeys } = req.query;
+    const authToken = req.headers.authorization;
+
+
+    if (!componentKeys) {
+        return res.status(400).json({ error: 'componentKeys is required' });
+    }
+
+
+
+    try {
+      const response = await axios.get(`${SONARQUBE_URL}/api/issues/search`, {
+        params: {
+            componentKeys: componentKeys, 
+            severities: 'MAJOR' 
+        },
+       headers: { 'Authorization': authToken }
+      });
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error('Erreur SonarQube:', error);
+      res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+    }
+  }
+
+
+  async function isPassed(req,res) {
+    const {projectKey} = req.query ;
+    const authToken = req.headers.authorization;
+
+    if(!projectKey)
+    {
+        return res.status(400).json({ error: 'componentKeys is required' });
+    }
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/qualitygates/project_status`, {
+          params: {
+              projectKey: projectKey
+             
+          },
+         headers: { 'Authorization': authToken }
+        });
+    
+        res.json(response.data);
+      } catch (error) {
+        console.error('Erreur SonarQube:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des données d’analyse' });
+      }
+
+  }
+  
+
+  // COUNT SEVERITY --
+
+ async function getSeverityCount(req,res) {
+    try {
+        const {componentKeys} = req.query ;
+        const authToken = req.headers.authorization;
+
+            if(!componentKeys)
+            {
+                return res.status(400).json({ error: 'componentKeys is required' });
+
+            }
+
+        const severities = ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR', 'INFO'];
+        let severityCounts = {};
+
+        for (let severity of severities) {
+            const response = await axios.get(`${SONARQUBE_URL}/api/issues/search`, {
+                params: {
+                    componentKeys: componentKeys,
+                    severities: severity,
+                    ps: 1, 
+                },
+                headers: { 'Authorization': authToken }
+            });
+
+            severityCounts[severity.toLowerCase()] = response.data.total;
+        }
+
+        res.json(severityCounts);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données SonarQube', error);
+        res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+};
+
+
+
+
+const getOrgProjectsStats = async (req, res) => {
+    const authToken = req.headers.authorization;
+
+
+    
+    try {
+        const response = await axios.get(`${SONARQUBE_URL}/api/organizations/projects`, {
+            headers: { 'Authorization': authToken }       });
+
+        res.json(response.data.projects);
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de la récupération des projets" });
+    }
+};
+  
+
+
+
+module.exports = { loginSonarQube, getSonarProjets ,createProject,getProjectAnalyses ,getSonarAnalysis,getSonarIssues,isPassed,getSeverityCount,getOrgProjectsStats};
