@@ -35,6 +35,7 @@ const loginSonarQube = async (req, res) => {
 
 const createProject = async (req, res) => {
     const { name, project } = req.body;
+    const authToken = req.query.authToken;
 
     if (!name || !project) {
         return res.status(400).json({ error: 'Name and project key are required' });
@@ -43,22 +44,24 @@ const createProject = async (req, res) => {
     const params = new URLSearchParams({ name, project });
 
     try {
-        //console.log(SONARQUBE_URL) ;
         const response = await axios.post(
-            `${SONARQUBE_URL}/projects/create`,
+            `${SONARQUBE_URL}/api/projects/create`,  
             params.toString(),
             {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Basic ${Buffer.from(SONARQUBE_TOKEN + ':').toString('base64')}`
+                    'Authorization': `Basic ${authToken}`,
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }
         );
         res.status(201).json(response.data);
     } catch (error) {
-        res.status(error.response?.status || 500).json({ error: error.response?.data || 'Internal Server Error' });
+        res.status(error.response?.status || 500).json({
+            error: error.response?.data || 'Internal Server Error'
+        });
     }
 };
+
 
 
 const getSonarProjets = async (req, res) => {
@@ -86,16 +89,19 @@ const getSonarProjets = async (req, res) => {
 
 const getProjectAnalyses = async (req, res) => {
     const { project } = req.query;
-    const authToken = req.headers.authorization;
+    //const authToken = req.headers.authorization;
+    const authToken = req.query.authToken ;
 
-    if (!project) {
-        return res.status(400).json({ error: 'Project key is required' });
+    
+
+    if ( !authToken) {
+        return res.status(400).json({ error: 'Project key and authToken are required' });
     }
-
+        
     try {
         const response = await axios.get(`${SONARQUBE_URL}/api/project_analyses/search`, {
             params: { project },
-            headers: { 'Authorization': authToken }
+            headers: { 'Authorization': `Basic ${authToken}` }
         });
 
         res.status(200).json(response.data);
@@ -108,7 +114,10 @@ const getProjectAnalyses = async (req, res) => {
 
 async function getSonarAnalysis(req, res) {
     const { projectKey } = req.query;
-    const authToken = req.headers.authorization;
+   // const authToken = req.headers.authorization;
+    const authToken = req.query.authToken;
+
+    console.log(`Requête envoyée à : ${SONARQUBE_URL}/api/measures/component?component=${projectKey}&metricKeys=coverage,ncloc,complexity,violations`);
 
 
     if (!projectKey) {
@@ -123,8 +132,8 @@ async function getSonarAnalysis(req, res) {
           component: projectKey, 
           metricKeys: 'coverage,ncloc,complexity,violations' 
         },
-       headers: { 'Authorization': authToken }
-      });
+        headers: { 'Authorization': `Basic ${authToken}` }
+    });
   
       res.json(response.data);
     } catch (error) {
@@ -154,7 +163,7 @@ async function getSonarAnalysis(req, res) {
             componentKeys: componentKeys, 
             severities: 'MAJOR' 
         },
-       headers: { 'Authorization': authToken }
+        headers: { 'Authorization': `Basic ${authToken}` }
       });
   
       res.json(response.data);
@@ -166,8 +175,12 @@ async function getSonarAnalysis(req, res) {
 
 
   async function isPassed(req,res) {
+
     const {projectKey} = req.query ;
-    const authToken = req.headers.authorization;
+    //const authToken = req.headers.authorization;
+    const authToken = req.query.authToken;
+
+
 
     if(!projectKey)
     {
@@ -179,7 +192,7 @@ async function getSonarAnalysis(req, res) {
               projectKey: projectKey
              
           },
-         headers: { 'Authorization': authToken }
+          headers: { 'Authorization': `Basic ${authToken}` }
         });
     
         res.json(response.data);
