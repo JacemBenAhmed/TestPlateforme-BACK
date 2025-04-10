@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_URL = 'http://192.168.1.111:9000'  
+        SONARQUBE_URL = 'http://192.168.100.105:9000'  
     }
 
      parameters {
@@ -14,7 +14,7 @@ pipeline {
         stage('Cloner le Repository') {
             steps {
                 git branch: 'main', url: params.url
-            }
+            }   
         }
 
         stage('SonarQube Test') {
