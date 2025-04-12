@@ -209,7 +209,7 @@ async function getSonarAnalysis(req, res) {
  async function getSeverityCount(req,res) {
     try {
         const {componentKeys} = req.query ;
-        const authToken = req.headers.authorization;
+        const authToken = req.query.authToken;
 
             if(!componentKeys)
             {
@@ -227,7 +227,7 @@ async function getSonarAnalysis(req, res) {
                     severities: severity,
                     ps: 1, 
                 },
-                headers: { 'Authorization': authToken }
+                headers: { 'Authorization': `Basic ${authToken}` }
             });
 
             severityCounts[severity.toLowerCase()] = response.data.total;
