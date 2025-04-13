@@ -1,6 +1,5 @@
 const Report = require("../models/reportModel");
 
-// Créer un nouveau rapport
 exports.createReport = async (req, res) => {
   const { username, repoName, reportData, reportQuality, severityData } = req.body;
 
@@ -21,7 +20,6 @@ exports.createReport = async (req, res) => {
   }
 };
 
-// Récupérer tous les rapports
 exports.getAllReports = async (req, res) => {
   try {
     const reports = await Report.find().sort({ createdAt: -1 });
@@ -32,7 +30,6 @@ exports.getAllReports = async (req, res) => {
   }
 };
 
-// Récupérer les rapports par utilisateur
 exports.getReportsByUser = async (req, res) => {
   const { username } = req.params;
 
@@ -45,7 +42,18 @@ exports.getReportsByUser = async (req, res) => {
   }
 };
 
-// Supprimer un rapport par ID
+exports.getReportByID = async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    const report = await Report.findById(_id); 
+    res.status(200).json(report);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des rapports pour cet utilisateur:", error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
 exports.deleteReport = async (req, res) => {
   const { id } = req.params;
 

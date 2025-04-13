@@ -8,6 +8,8 @@ router.get("/reports", reportController.getAllReports);
 
 router.get("/reports/user/:username", reportController.getReportsByUser);
 
+router.get("/reports/:_id", reportController.getReportByID);
+
 router.delete("/report/:id", reportController.deleteReport);
 
 module.exports = router;
