@@ -13,10 +13,10 @@ pipeline {
     stages {
         stage('Cloner le Repository') {
             steps {
-                
-                dir('/home/vm/modules') {
-                    git branch: 'main', url: params.url
-                }  
+
+                script {
+                    sh 'git clone ${params.url} /home/vm/modules'
+         } 
             }   
         }
 
