@@ -8,6 +8,7 @@ pipeline {
      parameters {
         string(name: 'projetkey', defaultValue: '', description: 'Clé du projet SonarQube')
         string(name: 'url', defaultValue: '', description: 'URL du dépôt Git')
+         string(name:'SNYK_TOKEN',defaultValue:'',description:'Snyk_token')
     }
 
     stages {
@@ -47,8 +48,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                    cd /home/vm/modules/${params.projetkey}
-                    snyk code test --json > report.json 
+                    snyk auth ${params.SNYK_TOKEN}  
+                    cd /home/vm/modules/${projetkey}
+                    snyk code test --json > report.json
                     """
                 }
             }
