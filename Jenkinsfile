@@ -47,8 +47,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    cd /home/vm/modules/Hospital-Management-Odoo
-                    snyk code test --json > report.json || (echo 'Snyk test failed'; exit 1)
+                    cd /home/vm/modules/${params.projetkey}
+                    snyk code test --json > report.json 
                     """
                 }
             }
