@@ -15,8 +15,14 @@ pipeline {
             steps {
 
                 script {
-                    sh "git clone ${params.url} /home/vm/modules"
-         } 
+                    sh 'rm -rf /home/vm/modules/*'
+
+                sh """
+                cd /home/vm/modules
+                git clone ${params.url} .
+                """               
+                
+                 } 
             }   
         }
 
