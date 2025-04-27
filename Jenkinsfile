@@ -19,7 +19,7 @@ pipeline {
 
                 sh """
                 cd /home/vm/modules
-                git clone ${params.url} .
+                git clone ${params.url} 
                 """               
                 
                  } 
