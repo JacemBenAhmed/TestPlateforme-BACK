@@ -15,7 +15,7 @@ pipeline {
             steps {
 
                 script {
-                    sh 'git clone ${params.url} /home/vm/modules'
+                    sh "git clone ${params.url} /home/vm/modules"
          } 
             }   
         }
