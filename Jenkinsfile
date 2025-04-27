@@ -45,21 +45,17 @@ pipeline {
             }
         }
 
-         stages {
-            stage('Snyk Test') {
-                steps {
-                    script {
-                        withCredentials([string(credentialsId: 'Snyk', variable: 'SNYK_TOKEN')]) {
-                            sh """
-                                snyk auth ${SNYK_TOKEN}  // Use the securely injected token
-                                cd /home/vm/modules/Hospital-Management-Odoo
-                                snyk code test --json > report.json
-                            """
-                        }
-                    }
+        stage('Snyk Test') {
+            steps {
+                script {
+                    sh """
+                    snyk auth ${SNYK_TOKEN}  
+                    cd /home/vm/modules/${projetkey}
+                    snyk code test --json > report.json
+                    """
                 }
             }
-    }
+        }
         
 
 
