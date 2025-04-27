@@ -43,6 +43,16 @@ pipeline {
             }
         }
 
+        stage('Snyk Test') {
+            steps {
+                script {
+                    sh """
+                    cd /home/vm/modules/${params.projetkey}
+                    snyk code test --json > report.json
+                    """
+                }
+            }
+        }
         
 
 
