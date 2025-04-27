@@ -11,9 +11,27 @@ pipeline {
     }
 
     stages {
+
+        stage('Prepare Workspace') {
+            steps {
+                script {
+                    def repoDir = "/home/vm/modules/${params.projetkey}"
+                    
+                    if (fileExists(repoDir)) {
+                        echo "Repository exists, removing it."
+                        sh "rm -rf ${repoDir}"
+                    }
+                }
+            }
+        }
+
         stage('Cloner le Repository') {
             steps {
-                git branch: 'main', url: params.url
+                
+                echo "Cloning repository into /home/vm/modules"
+                    dir('/home/vm/modules') {
+                        git branch: 'main', url: params.url
+                    }
             }   
         }
 
