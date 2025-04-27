@@ -15,7 +15,7 @@ pipeline {
         stage('Prepare Workspace') {
             steps {
                 script {
-                    def repoDir = "/home/vm/modules/${params.projetkey}"
+                    def repoDir = "/home/vm/modules/Hospital-Management-Odoo"
                     
                     if (fileExists(repoDir)) {
                         echo "Repository exists, removing it."
@@ -27,11 +27,7 @@ pipeline {
 
         stage('Cloner le Repository') {
             steps {
-                
-                echo "Cloning repository into /home/vm/modules"
-                    dir('/home/vm/modules') {
-                        git branch: 'main', url: params.url
-                    }
+                git branch: 'main', url: params.url
             }   
         }
 
