@@ -49,7 +49,7 @@ pipeline {
             stage('Snyk Test') {
                 steps {
                     script {
-                        withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
+                        withCredentials([string(credentialsId: 'Snyk', variable: 'SNYK_TOKEN')]) {
                             sh """
                                 snyk auth ${SNYK_TOKEN}  // Use the securely injected token
                                 cd /home/vm/modules/Hospital-Management-Odoo
