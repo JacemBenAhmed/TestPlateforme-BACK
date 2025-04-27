@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_URL = 'http://192.168.100.150:9000'  
+        SNYK_TOKEN = credentials('Snyk')
     }
 
      parameters {
@@ -48,7 +49,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    snyk auth ${params.SNYK_TOKEN}  
+                    snyk auth ${SNYK_TOKEN}  
                     cd /home/vm/modules/${projetkey}
                     snyk code test --json > report.json
                     """
@@ -61,4 +62,3 @@ pipeline {
         
     }
 }
-
