@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN, JENKINS_JOB_NAME ,JENKINS_API_TOKEN2} = require('../config/dotenvConfig');
+const { JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN, JENKINS_JOB_NAME ,JENKINS_API_TOKEN2,SNYK_TOKEN} = require('../config/dotenvConfig');
 
 exports.runJenkinsJob = async (req, res) => {
     try {

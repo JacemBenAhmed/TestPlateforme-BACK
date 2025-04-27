@@ -3,11 +3,13 @@ pipeline {
 
     environment {
         SONARQUBE_URL = 'http://192.168.100.150:9000'  
+        SNYK_TOKEN = credentials('Snyk')
     }
 
      parameters {
         string(name: 'projetkey', defaultValue: '', description: 'Clé du projet SonarQube')
         string(name: 'url', defaultValue: '', description: 'URL du dépôt Git')
+         string(name:'SNYK_TOKEN',defaultValue:'',description:'Snyk_token')
     }
 
     stages {
@@ -47,8 +49,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                    cd /home/vm/modules/${params.projetkey}
-                    snyk code test --json > report.json 
+                    snyk auth ${SNYK_TOKEN}  
+                    cd /home/vm/modules/${projetkey}
+                    snyk code test --json > report.json
                     """
                 }
             }
@@ -59,4 +62,3 @@ pipeline {
         
     }
 }
-
