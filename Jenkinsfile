@@ -11,21 +11,11 @@ pipeline {
     }
 
     stages {
-
-        
-
         stage('Cloner le Repository') {
             steps {
-                script {
-                    
-                    sh 'rm -rf /home/vm/modules/${params.projetkey}'
-                    dir('/home/vm/modules') {
-                        git branch: 'main', url: params.url
-                    }
-                }
-            }
-            }
-
+                git branch: 'main', url: params.url
+            }   
+        }
 
         stage('SonarQube Test') {
             steps {
