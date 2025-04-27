@@ -12,27 +12,20 @@ pipeline {
 
     stages {
 
-        stage('Prepare Workspace') {
-            steps {
-                script {
-                    def repoDir = "/home/vm/modules/Hospital-Management-Odoo"
-                    
-                    if (fileExists(repoDir)) {
-                        echo "Repository exists, removing it."
-                        sh "rm -rf ${repoDir}"
-                    }
-                }
-            }
-        }
+        
 
         stage('Cloner le Repository') {
             steps {
-                  echo "Cloning repository modules"
+                script {
+                    
+                    sh 'rm -rf /home/vm/modules/${params.projetkey}'
                     dir('/home/vm/modules') {
                         git branch: 'main', url: params.url
                     }
-            }   
-        }
+                }
+            }
+            }
+
 
         stage('SonarQube Test') {
             steps {
