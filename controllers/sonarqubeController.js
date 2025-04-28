@@ -217,7 +217,16 @@ async function getSonarAnalysis(req, res) {
 
             }
 
-        const severities = ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR', 'INFO'];
+        //const severities = ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR', 'INFO'];
+        const severityMapping = {
+            Blocker: 'BLOCKER',
+            High: 'CRITICAL',
+            Medium: 'MAJOR',
+            Low: 'MINOR',
+            Info: 'INFO'
+        };
+        const severities = Object.keys(severityMapping);
+
         let severityCounts = {};
 
         for (let severity of severities) {
