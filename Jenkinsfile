@@ -58,15 +58,20 @@ pipeline {
         }
 
 
-           stage('Archive Report') {
-
-            
+           stage('Archive') {
             steps {
-                archiveArtifacts artifacts: "modules/${projetkey}/report.json", fingerprint: true
+                archiveArtifacts artifacts: 'report.json', fingerprint: true
             }
         }
-        
 
+        stage('Expose URL') {
+            steps {
+                script {
+                    echo "Your report is accessible at:"
+                    echo "${env.BUILD_URL}artifact/report.json"
+                }
+            }
+        }
 
         
     }
