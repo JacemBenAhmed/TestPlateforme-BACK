@@ -28,14 +28,15 @@ pipeline {
             }   
         }
 
-        stage('SonarQube Test') {
+          stage('SonarQube Test') {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-sonarr', variable: 'SONARQUBE_TOKEN')]) {
                     script {
-                        def scannerHome = tool 'SonarScanner'  
+                        def scannerHome = tool 'SonarScanner'
                         sh """
+                            cd /home/vm/modules/${params.projetkey}
                             $scannerHome/bin/sonar-scanner \
-                                -Dsonar.projectKey=${params.projetkey}\
+                                -Dsonar.projectKey=${params.projetkey} \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=$SONARQUBE_URL \
                                 -Dsonar.login=\$SONARQUBE_TOKEN
