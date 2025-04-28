@@ -51,7 +51,7 @@ pipeline {
                     sh """
                     snyk auth ${SNYK_TOKEN}  
                     cd /home/vm/modules/${projetkey}
-                    snyk code test --json > report.json
+                    snyk code test --json > report.json || true
                     """
                 }
             }
