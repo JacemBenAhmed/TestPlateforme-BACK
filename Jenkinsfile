@@ -59,10 +59,8 @@ pipeline {
 
 
            stage('Archive Report') {
+
             
-            script {
-            echo "Current workspace path: ${pwd()}"
-            }
             steps {
                 archiveArtifacts artifacts: "modules/${projetkey}/report.json", fingerprint: true
             }
