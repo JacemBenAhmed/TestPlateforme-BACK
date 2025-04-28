@@ -56,6 +56,13 @@ pipeline {
                 }
             }
         }
+
+
+           stage('Archive Report') {
+            steps {
+                archiveArtifacts artifacts: "modules/${projetkey}/report.json", fingerprint: true
+            }
+        }
         
 
 
