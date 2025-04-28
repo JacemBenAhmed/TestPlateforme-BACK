@@ -78,4 +78,24 @@ exports.getJobStatus = async (req,res)=>{
         console.error("Erreur lors de la récupération du statut Jenkins:", error.message);
         throw error;
       }
+
+
+
+
+};
+ 
+ 
+exports.getReportSnyk=async(req,res)=>{
+    try {
+        const jenkinsUrl = 'http://192.168.100.150:8080/job/SonarQube_odoo/lastSuccessfulBuild/artifact/report.json';
+    
+        const response = await axios.get(jenkinsUrl, {
+          responseType: 'json' 
+        });
+    
+        res.json(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du report :', error.message);
+        res.status(500).send('Erreur lors de la récupération du report depuis Jenkins');
+      }
 };
