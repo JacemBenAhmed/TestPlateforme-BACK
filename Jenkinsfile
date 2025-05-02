@@ -34,11 +34,11 @@ pipeline {
                     script {
                         def scannerHome = tool 'SonarScanner'
                         sh """
-                            cd /home/vm/modules/${params.projetkey}
+                            cd /home/vm/modules/
                             $scannerHome/bin/sonar-scanner \
                                 -Dsonar.projectKey=${params.projetkey} \
                                 -Dsonar.sources=. \
-                                -Dsonar.projectKey=${params.projetkey}-${env.BUILD_NUMBER} \
+                                -Dsonar.projectKey=${params.projetkey} \
                                 -Dsonar.login=\$SONARQUBE_TOKEN
                         """
                     }
