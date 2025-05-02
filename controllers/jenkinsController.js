@@ -87,7 +87,7 @@ exports.getJobStatus = async (req,res)=>{
  
 exports.getReportSnyk=async(req,res)=>{
     try {
-        const jenkinsUrl = 'http://192.168.100.150:8080/job/SonarQube_odoo/lastSuccessfulBuild/artifact/report.json';
+        const jenkinsUrl = 'http://192.168.100.56:8080/job/SonarQube_odoo/lastSuccessfulBuild/artifact/report.json';
     
         const response = await axios.get(jenkinsUrl, {
           responseType: 'json' 

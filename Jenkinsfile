@@ -38,7 +38,7 @@ pipeline {
                             $scannerHome/bin/sonar-scanner \
                                 -Dsonar.projectKey=${params.projetkey} \
                                 -Dsonar.sources=. \
-                                -Dsonar.host.url=$SONARQUBE_URL \
+                                -Dsonar.projectKey=${params.projetkey}-${env.BUILD_NUMBER} \
                                 -Dsonar.login=\$SONARQUBE_TOKEN
                         """
                     }
