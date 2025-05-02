@@ -34,7 +34,7 @@ pipeline {
                     script {
                         def scannerHome = tool 'SonarScanner'
                         sh """
-                            cd /home/vm/modules/
+                            cd /home/vm/modules/${params.projetkey}
                             $scannerHome/bin/sonar-scanner \
                                 -Dsonar.projectKey=${params.projetkey} \
                                 -Dsonar.sources=. \
