@@ -42,6 +42,17 @@ exports.getReportsByUser = async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
+exports.getReportByRepo = async (req, res) => {
+  const { repoName } = req.params;
+
+  try {
+    const reports = await Report.find({ repoName }).sort({ createdAt: -1 });
+    res.status(200).json(reports);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des rapports pour cet utilisateur:", error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
 
 exports.getReportByID = async (req, res) => {
   const { _id } = req.params;
