@@ -1,7 +1,7 @@
 const Report = require("../models/reportModel");
 
 exports.createReport = async (req, res) => {
-  const { username, repoName, reportData, reportQuality, severityData,reportSnyk } = req.body;
+  const { username, repoName, reportData, reportQuality, severityData,reportSnyk,issuesData } = req.body;
 
   try {
     const report = new Report({
@@ -10,7 +10,8 @@ exports.createReport = async (req, res) => {
       reportData,
       reportQuality,
       severityData,
-      reportSnyk
+      reportSnyk,
+      issuesData
     });
 
     await report.save();

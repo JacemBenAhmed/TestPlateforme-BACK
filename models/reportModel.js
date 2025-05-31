@@ -8,6 +8,8 @@ const reportSchema = new mongoose.Schema(
     reportQuality: { type: mongoose.Schema.Types.Mixed, required: true },
     severityData: { type: mongoose.Schema.Types.Mixed, required: true },
     reportSnyk: { type: mongoose.Schema.Types.Mixed, required: true },
+    issuesData: { type: mongoose.Schema.Types.Mixed, required: true },
+
   },
   { timestamps: true } 
 );

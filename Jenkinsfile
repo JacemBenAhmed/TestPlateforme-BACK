@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_URL = 'http://192.168.100.56:9000'  
+        SONARQUBE_URL = 'http://192.168.100.74:9000'  
         SNYK_TOKEN = credentials('Snyk')
     }
 
@@ -30,7 +30,7 @@ pipeline {
 
           stage('SonarQube Test') {
             steps {
-                withCredentials([string(credentialsId: 'jenkins-sonarr', variable: 'SONARQUBE_TOKEN')]) {
+                withCredentials([string(credentialsId: 'jenkins-sonarr', variable: 'SONARQUBE_TOKEN')]) {   
                     script {
                         def scannerHome = tool 'SonarScanner'
                         sh """

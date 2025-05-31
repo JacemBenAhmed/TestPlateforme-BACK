@@ -161,7 +161,8 @@ async function getSonarAnalysis(req, res) {
       const response = await axios.get(`${SONARQUBE_URL}/api/issues/search`, {
         params: {
             componentKeys: componentKeys, 
-            severities: 'BLOCKER' 
+            severities: 'CRITICAL' ,
+            
         },
         headers: { 'Authorization': `Basic ${authToken}` }
       });
