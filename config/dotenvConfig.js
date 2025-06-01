@@ -9,5 +9,6 @@ module.exports = {
     JENKINS_JOB_NAME:process.env.JENKINS_JOB_NAME,
     JENKINS_USER:process.env.JENKINS_USER ,
     JENKINS_API_TOKEN2:process.env.JENKINS_API_TOKEN2,
-    SNYK_TOKEN:process.env.SNYK_TOKEN
+    SNYK_TOKEN:process.env.SNYK_TOKEN,
+    JENKINS_JOB_DAST:process.env.JENKINS_JOB_DAST
 };

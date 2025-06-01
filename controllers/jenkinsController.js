@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN, JENKINS_JOB_NAME ,JENKINS_API_TOKEN2,SNYK_TOKEN} = require('../config/dotenvConfig');
+const { JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN, JENKINS_JOB_NAME ,JENKINS_API_TOKEN2,SNYK_TOKEN,JENKINS_JOB_DAST} = require('../config/dotenvConfig');
 
 exports.runJenkinsJob = async (req, res) => {
     try {
@@ -34,7 +34,38 @@ exports.runJenkinsJob = async (req, res) => {
     }
 };
 
+exports.runJenkinsDastJob = async (req, res) => {
+    try {
+       
 
+
+        const jenkinsUrl = `${JENKINS_URL}/job/${JENKINS_JOB_DAST}/build`;
+        console.log(jenkinsUrl) ;
+        const response = await axios.post(jenkinsUrl, {}, {
+            auth: {
+                username: JENKINS_USER,
+                password: JENKINS_API_TOKEN2
+            }
+        });
+
+        console.log('Jenkins Response:', response);
+
+
+        const buildUrl = response.headers.location;
+        const buildNumber = buildUrl.split('/').pop();  
+        console.log('Build triggered, BUILD_NUMBER:', buildNumber);
+
+        res.json({ 
+            message: "Job Jenkins déclenché avec succès", 
+            status: response.status, 
+            buildNumber: buildNumber  
+        });
+
+
+    } catch (error) {
+        
+    }
+};
 
 
 exports.getJenkinsJobs = async (req, res) => {
@@ -81,15 +112,34 @@ exports.getJobStatus = async (req,res)=>{
         throw error;
       }
 
+};
+ 
+
+exports.getJobDastStatus = async (req,res)=>{
+    try {
+
+        const response = await axios.get(`${JENKINS_URL}/job/${JENKINS_JOB_DAST}/lastBuild/api/json`, {
+          auth: {
+            username: JENKINS_USER,
+            password: JENKINS_API_TOKEN
+          }
+        });
+  
+        const jobStatus = response.data.result || "RUNNING";
+
+        return res.json({ status: jobStatus });
 
 
+      } catch (error) {
+        console.error("Erreur lors de la récupération du statut Jenkins:", error.message);
+        throw error;
+      }
 
 };
  
- 
 exports.getReportSnyk=async(req,res)=>{
     try {
-        const jenkinsUrl = 'http://192.168.100.56:8080/job/SonarQube_odoo/lastSuccessfulBuild/artifact/report.json';
+        const jenkinsUrl = `${JENKINS_URL}/job/SonarQube_odoo/lastSuccessfulBuild/artifact/report.json`;
     
         const response = await axios.get(jenkinsUrl, {
           responseType: 'json' 

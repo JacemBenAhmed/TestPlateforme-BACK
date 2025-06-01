@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_URL = 'http://192.168.100.74:9000'  
+        SONARQUBE_URL = 'http://192.168.230.229:9000'  
         SNYK_TOKEN = credentials('Snyk')
     }
 
